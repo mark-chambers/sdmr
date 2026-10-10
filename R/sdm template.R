@@ -27,8 +27,7 @@ library(ggplot2)
 ## ---- Settings ---- ##
 
 # Filepaths
-project_fp <- paste0(Sys.getenv("USERPROFILE"), "/OneDrive - KENT COUNTY COUNCIL/Shared Documents - Kent Analytics Team/Work/KPHO/[project folder]/data/")
-main_fp <- "G:/ST Strategic Commissioning/Analytics (R)/Public Health Observatory (R)/data/datasets/"
+# Will be a data sub folder ...
 
 # Colours
 col_kent <- "#2D7C82"

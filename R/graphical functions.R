@@ -20,8 +20,7 @@
 ## ---- Settings ---- ##
 
 # Filepaths
-project_fp <- paste0(Sys.getenv("USERPROFILE"), "/OneDrive - KENT COUNTY COUNCIL/Shared Documents - Kent Analytics Team/Work/KPHO/[project folder]/data/")
-main_fp <- "G:/ST Strategic Commissioning/Analytics (R)/Public Health Observatory (R)/data/datasets/"
+# Will be a data sub folder ...
 
 # Colours
 col_kent <- "#2D7C82"
@@ -191,7 +190,7 @@ sine_wave(t = 0:10, amplitude = 10, frequency = 1, phase = 0, vertical_shift = 5
 
 ## ---- Outputs ---- ##
 
-pdf("graphical functions.pdf", paper = "a4")
+pdf("output/graphical functions.pdf", paper = "a4")
 par(mfrow = c(1, 1))
 plot_gf(y = linear_data, title = "Linear function")
 plot_gf(y = step_change_data, title = "Step change function")
