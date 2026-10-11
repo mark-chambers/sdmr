@@ -13,13 +13,26 @@
 ## ---------------------------
 ## Notes:
 ## init gives the starting stock values; state is the current stock-value 
-## vector passed into the function; and dA through dD are rates, not stock
+## vector passed into the function; and d-variables are rates, not stock
 ## values.
 ## ode() repeatedly calls sd_mod() with the current time, stock values, and
 ## parameters, then integrates the returned rates to estimate updated stocks.
 ## With method = "lsoda", internal step sizes are chosen by the solver and
 ## need not match times; times specifies when results are returned.
-##
+## 
+## ode() works through these steps:
+## 1. y = init gives ode() the starting values for all stocks.
+## 2. ode() calls sd_mod() with the current time, current stock values,
+##    and parms = parameters. The argument name 'state' is user-chosen.
+## 3. sd_mod() calculates each stock's rate of change. Each d-variable is
+##    the net flow (inflows minus outflows), measured in stock units per time.
+## 4. sd_mod() returns the rates in a list, in the same order as the stocks
+##    in init. These rates are not the updated stock values.
+## 5. The solver integrates the rates to estimate updated stock values.
+##    It returns results at times; lsoda may calculate at other internal times.
+## 
+## Final steps: Converting it to a data frame and reshaping it for plotting 
+## changes the output format, not the model calculation.
 ## ---------------------------
 
 
@@ -100,6 +113,11 @@ sd_mod <- function(time, state, parameters) {
   # Make the named stocks and parameters available by name in the equations.
   with(as.list(c(state, parameters)), {
     # Each d-variable is the rate of change of its corresponding stock.
+    # Can think of these as net flows into or out of the stock. 
+    # Positive values increase the stock, negative values decrease it.
+    # Some expressions only have one term which may be positive or negative, 
+    # but most have multiple terms.
+    # Others will have an inflow and an outflow
     dA <- -param1 * A * C / n
     dB <- param1 * A * C / n - param2 * B
     dC <- param2 * B - param3 * C
