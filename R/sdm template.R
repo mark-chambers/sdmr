@@ -15,6 +15,10 @@
 ## init gives the starting stock values; state is the current stock-value 
 ## vector passed into the function; and dA through dD are rates, not stock
 ## values.
+## ode() repeatedly calls sd_mod() with the current time, stock values, and
+## parameters, then integrates the returned rates to estimate updated stocks.
+## With method = "lsoda", internal step sizes are chosen by the solver and
+## need not match times; times specifies when results are returned.
 ##
 ## ---------------------------
 
@@ -73,6 +77,23 @@ init <- c(
 times <- seq(0, 160, by = 1)
 time_unit <- "days"
 
+# Validation
+# times is finite and increasing
+if (!is.numeric(times) || any(!is.finite(times)) || !all(diff(times) > 0)) {
+  stop("'times' must be a non-negative numeric vector of finite values in increasing order.")
+}
+# check that stock and parameter names are unique
+if (length(unique(names(init))) != length(init)) {
+  stop("Stock names in 'init' must be unique.")
+}
+if (length(unique(names(parameters))) != length(parameters)) {
+  stop("Parameter names in 'parameters' must be unique.")
+}
+# check that names are disjoint between stocks and parameters
+if (length(intersect(names(init), names(parameters))) > 0) {
+  stop("Stock names and parameter names must be disjoint (no overlap).")
+}
+
 # Define a function that returns the rates of change for each state variable
 # The function must follow this format
 sd_mod <- function(time, state, parameters) {
@@ -91,23 +112,6 @@ sd_mod <- function(time, state, parameters) {
 }
 
 ## ---- Processing ---- ##
-
-# Validation
-# times is finite and increasing
-if (!is.numeric(times) || any(!is.finite(times)) || !all(diff(times) > 0)) {
-  stop("'times' must be a non-negative numeric vector of finite values in increasing order.")
-}
-# check that stock and parameter names are unique
-if (length(unique(names(init))) != length(init)) {
-  stop("Stock names in 'init' must be unique.")
-}
-if (length(unique(names(parameters))) != length(parameters)) {
-  stop("Parameter names in 'parameters' must be unique.")
-}
-# check that names are disjoint between stocks and parameters
-if (length(intersect(names(init), names(parameters))) > 0) {
-  stop("Stock names and parameter names must be disjoint (no overlap).")
-}
 
 # The ode() function from deSolve numerically integrates the system of equations.
 output <- deSolve::ode(
