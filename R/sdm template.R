@@ -12,7 +12,9 @@
 
 ## ---------------------------
 ## Notes:
-##
+## init gives the starting stock values; state is the current stock-value 
+## vector passed into the function; and dA through dD are rates, not stock
+## values.
 ##
 ## ---------------------------
 
@@ -74,18 +76,17 @@ time_unit <- "days"
 # Define a function that returns the rates of change for each state variable
 # The function must follow this format
 sd_mod <- function(time, state, parameters) {
+  # Make the named stocks and parameters available by name in the equations.
   with(as.list(c(state, parameters)), {
-    # Rates of change or net flows of people
-    # For rates of change, d prefixes the variable names to indicate they are derivatives (rates of change) of the respective compartments.
-    # These are not flows but rather net changes in stocks
-    # at each timestep
-    # Replace capital letters with your stock names
-    # define how parameters and stocks interact to determine rate of change for stocks
-    dA <- -param1 * A * C / n  # Note on change in stock A
-    dB <- param1 * A * C / n - param2 * B # Note on change in stock B
-    dC <- param2 * B - param3 * C # Note on change in stock C
-    dD <- param3 * C # Note on change in stock D
-    return(list(c(dA, dB, dC, dD)))  # must return a list
+    # Each d-variable is the rate of change of its corresponding stock.
+    dA <- -param1 * A * C / n
+    dB <- param1 * A * C / n - param2 * B
+    dC <- param2 * B - param3 * C
+    dD <- param3 * C
+
+    # Return rates in the same order as the initial stocks in init.
+    # deSolve integrates these rates to calculate the stock values.
+    return(list(c(dA, dB, dC, dD)))
   })
 }
 
@@ -110,10 +111,10 @@ if (length(intersect(names(init), names(parameters))) > 0) {
 
 # The ode() function from deSolve numerically integrates the system of equations.
 output <- deSolve::ode(
-    y = init,  # initial state values (or stocks)
-    times = times,  # time points
-    func = sd_mod,  # function that computes the rates of change
-    parms = parameters,  # parameters passed to the function
+    y = init,          # Starting values for the stocks; updated as the model runs
+    times = times,     # Times at which to return results, not necessarily every solver calculation
+    func = sd_mod,     # Function that calculates the rates of change
+    parms = parameters,# Parameters supplied to sd_mod on each call
     method = "lsoda"  # default method, suitable for most problems
 )
 
