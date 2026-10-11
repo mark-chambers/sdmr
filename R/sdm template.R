@@ -105,10 +105,10 @@ if (length(intersect(names(init), names(parameters))) > 0) {
 
 # The ode() function from deSolve numerically integrates the system of equations.
 output <- deSolve::ode(
-    y = init, 
-    times = times, 
-    func = sd_mod, 
-    parms = parameters,  # parameters passed to the sd_mod function
+    y = init,  # initial state values (or stocks)
+    times = times,  # time points
+    func = sd_mod,  # function that computes the rates of change
+    parms = parameters,  # parameters passed to the function
     method = "lsoda"  # default method, suitable for most problems
 )
 
