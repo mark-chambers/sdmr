@@ -101,8 +101,12 @@ output <- as.data.frame(output)
 ## ---- Outputs ---- ##
 
 # Convert to long format
-output_long <- pivot_longer(output, cols = A:D,
-                            names_to = "Stock", values_to = "Value")
+output_long <- tidyr::pivot_longer(
+  output,
+  cols = -time,
+  names_to = "Stock", 
+  values_to = "Value"
+)
 
 # Plot using ggplot2
 ggplot(output_long, aes(x = time, y = Value, color = Stock)) +
