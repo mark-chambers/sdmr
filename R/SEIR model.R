@@ -21,11 +21,6 @@ SEIR <- function(time, state, parameters) {
 # The with(as.list) part combines state and parameters into a single list and unpacks them so you can refer to S, E, I, R, beta, sigma, gamma, and N directly.
 # For rates of change, d prefixes the variable names to indicate they are derivatives (rates of change) of the respective compartments.
 
-# Initial states
-# These names must match those used in the SEIR function
-# And must be in the same order
-init <- c(S = N - 1, E = 0, I = 1, R = 0)
-
 # Parameters
 # All parameters used in the model must be defined here
 parameters <- c(
@@ -35,6 +30,13 @@ parameters <- c(
   N = 10000  # total population
 )
 
+
+# Initial states
+# These names must match those used in the SEIR function
+# And must be in the same order
+init <- c(S = unname(parameters["N"]) - 1, E = 0, I = 1, R = 0)
+
+
 # Time frame
 # Must be numeric and in increasing order
 times <- seq(0, 160, by = 1)
@@ -42,7 +44,6 @@ times <- seq(0, 160, by = 1)
 # The ode() function from deSolve numerically integrates the system of equations.
 output <- ode(
     y = init, 
-    diagnostic = TRUE,
     times = times, 
     func = SEIR, 
     parms = parameters,  # parameters passed to the SEIR function
