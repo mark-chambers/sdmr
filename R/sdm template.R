@@ -60,7 +60,7 @@ value_unit <- "People"
 # Reserve capital first letters for stock names to make it easier to identify them in the function
 # These names must match those used in the sd_mode function below
 # And must be in the same order
-init <- c(A = unname(parameters["n"]), B = 0, C = 1, D = 0)
+init <- c(A = parameters[["n"]] - 1, B = 0, C = 1, D = 0)
 
 # Time frame
 # Must be numeric and in increasing order
