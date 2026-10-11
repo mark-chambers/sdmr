@@ -20,7 +20,6 @@
 
 ## ---- Packages ---- ##
 library(deSolve)
-library(dplyr)
 library(tidyr)
 library(ggplot2)
 
@@ -88,7 +87,7 @@ sd_mod <- function(time, state, parameters) {
 ## ---- Processing ---- ##
 
 # The ode() function from deSolve numerically integrates the system of equations.
-output <- ode(
+output <- deSolve::ode(
     y = init, 
     times = times, 
     func = sd_mod, 
@@ -109,7 +108,7 @@ output_long <- tidyr::pivot_longer(
 )
 
 # Plot using ggplot2
-ggplot(output_long, aes(x = time, y = Value, color = Stock)) +
+ggplot2::ggplot(output_long, aes(x = time, y = Value, color = Stock)) +
   geom_line(linewidth = my_linewidth) +
   labs(title = "System dynamic model",
        x = paste0("Time (", time_unit, ")"),
