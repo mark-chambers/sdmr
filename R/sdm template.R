@@ -29,8 +29,8 @@ library(ggplot2)
 # Will be a data sub folder ...
 
 # Colours
-col_kent <- "#2D7C82"
-col_eng <- "#A9A9A9"
+col_1 <- "#2D7C82"
+col_2 <- "#A9A9A9"
 my_linewidth <- 1.5
 
 
@@ -108,16 +108,11 @@ output_long <- tidyr::pivot_longer(
 )
 
 # Plot using ggplot2
-ggplot2::ggplot(output_long, aes(x = time, y = Value, color = Stock)) +
+p <- ggplot2::ggplot(output_long, aes(x = time, y = Value, color = Stock)) +
   geom_line(linewidth = my_linewidth) +
   labs(title = "System dynamic model",
        x = paste0("Time (", time_unit, ")"),
        y = value_unit) +
   theme_minimal()
 
-# Old plotting style
-# matplot(output$time, output[,2:5], type = "l", lty = 1, col = 1:4,
-#         xlab = "Time (days)", ylab = "Population",
-#         main = "SEIR Model Dynamics")
-# legend("left", legend = c("Susceptible", "Exposed", "Infectious", "Recovered"),
-#        col = 1:4, lty = 1)
+print(p)
